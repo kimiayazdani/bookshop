@@ -120,3 +120,57 @@ class Login(APIView):
             return Response(data=context, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_403_FORBIDDEN, data={'message': 'username or password are wrong.'})
+
+
+
+@api_view(['GET', ])
+@permission_classes([IsAuthenticated, ])
+@authentication_classes([JWTAuthentication, ])
+def does_account_exist_view(request):
+    if request.method == 'GET':
+        email = request.GET['email'].lower()
+        data = {}
+        try:
+            Account.objects.get(email=email)
+            data['response'] = 'account with email: {email} exists'.format(email=email)
+        except Account.DoesNotExist:
+            data['response'] = "Account does not exist"
+            return Response(data=data, status=status.HTTP_403_FORBIDDEN)
+        return Response(data, status=status.HTTP_501_NOT_IMPLEMENTED)
+
+#--SHOW-PROFILE--
+
+@api_view(['GET', ])
+@permission_classes((IsAuthenticated,))
+@authentication_classes((JWTAuthentication,))
+def account_properties_view(request):
+    try:
+        account = request.user
+    except Account.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = AccountPropertiesSerializer(account)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+# --UPDATE--
+
+@api_view(['PATCH', ])
+@permission_classes((IsAuthenticated,))
+@authentication_classes((JWTAuthentication,))
+def update_account_view(request):
+    try:
+        account = request.user
+        print(account)
+    except Account.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PATCH':
+        serializer = AccountUpdateSerializer(account, data=request.data, partial=True)
+        data = {}
+        if serializer.is_valid():
+            serializer.save()
+            data['response'] = 'Account update success'
+            return Response(data=data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
