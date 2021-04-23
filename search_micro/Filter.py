@@ -1,8 +1,20 @@
 import json
 
+from flask import Flask, render_template, request, url_for, jsonify
 
-def sort_by_title_and_category(json_data, title=None, category=None):
+
+from http import HTTPStatus
+
+
+
+app = Flask(__name__)
+
+
+@app.route('/book/search/', methods=['POST'])
+def sort_by_title_and_category(json_data):
     data = json.load(json_data)
+    title = data['title']
+    category = data['category']
     if category is not None:
         sort_by_category = {"books": []}
         for book in data["books"]:
@@ -19,8 +31,8 @@ def sort_by_title_and_category(json_data, title=None, category=None):
     else:
         output = sort_by_category
 
-    return output
+    return jsonify(output), HTTPStatus.OK
 
+if __name__ == '__main__':
+    app.run(debug=True, port=8004)
 
-file = open("../books.json", 'r')
-print(sort_by_title_and_category(file, title="Design Pattern"))
