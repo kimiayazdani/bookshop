@@ -20,6 +20,18 @@ def login_client():
 def login_admin():
     return requests.post(path+admin+'/api/account/login/', json=request.json)
 
+@app.route('client/show/', methods=['GET'])
+def show_profile_client():
+    # no need for ID since token is handled.
+    return requests.get(path+client+'/api/account/properties/')
+
+@app.route('admin/show/', methods=['GET'])
+def show_profile_client():
+    # no need for ID since token is handled.
+    return requests.get(path+admin+'/api/account/properties/')
+
+    
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
