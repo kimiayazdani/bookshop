@@ -105,5 +105,15 @@ def book_all_admin():
         return requests.post(path + port_nums['book'] + '/api/v1/book/all/', json=request.json)
     return res
 
+@app.route('/client/book/search/', methods=['POST'])
+def book_search_client():
+    res = requests.get(path + port_nums['admin'] + '/api/account/properties/', headers=request.headers)
+    if 199 < res.status_code < 300:
+        res = requests.post(path + port_nums['book'] + '/api/v1/book/all/', json=request.json)
+        return requests.post(path + port_nums['search'] + '/book/search/', json=res.json)
+    return res
+
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
