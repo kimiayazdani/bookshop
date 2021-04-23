@@ -11,8 +11,8 @@ app = Flask(__name__)
 
 
 @app.route('/book/search/', methods=['POST'])
-def sort_by_title_and_category(json_data):
-    data = json.load(json_data)
+def sort_by_title_and_category():
+    data = json.load(request.json)
     title = data['title']
     category = data['category']
     if category is not None:
