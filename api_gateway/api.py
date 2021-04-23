@@ -9,6 +9,7 @@ app = Flask(__name__)
 path = "http://127.0.0.1:"
 port_nums = {'admin': '8001', 'client': '8002', 'search': '8003', 'book': '8004'}
 
+#ACCOUNTS FUNCTION
 
 @app.route('/client/login/', methods=['POST'])
 def login_client():
@@ -54,6 +55,14 @@ def refresh_token_client():
 @app.route('/admin/refreshtoken/', methods=['POST'])
 def refresh_token_admin():
     return requests.post(path + port_nums['admin'] + '/api/token/refresh/', json=request.json)
+
+#BOOK FUNCTION
+@app.route('/book/read/<int:id>', methods=['POST'])
+def book_read(id):
+    res = requests.get(path + port_nums['admin'] + '/api/account/properties/', headers=request.headers)    
+    if res.status_code > 199 and res.status_code < 300:
+        return requests.get(path + port_nums['admin'] + '/api/v1/book/post/'+str(id)+"/")
+    return res
 
 
 if __name__ == '__main__':
