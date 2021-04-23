@@ -14,23 +14,26 @@ port_nums = {'admin':8001, 'client':8002, 'search':8003, 'book':8004}
 
 @app.route('/client/login/', methods=['POST'])
 def login_client():
-    return requests.post(path+client+'/api/account/login/', json=request.json)
+    return requests.post(path+port_nums['client']+'/api/account/login/', json=request.json)
 
 @app.route('/admin/login/', methods=['POST'])
 def login_admin():
-    return requests.post(path+admin+'/api/account/login/', json=request.json)
+    return requests.post(path+port_nums['admin']+'/api/account/login/', json=request.json)
 
-@app.route('client/show/', methods=['GET'])
+@app.route('/client/show/', methods=['GET'])
 def show_profile_client():
     # no need for ID since token is handled.
-    return requests.get(path+client+'/api/account/properties/')
+    return requests.get(path+port_nums['client']+'/api/account/properties/', headers=request.headers)
 
-@app.route('admin/show/', methods=['GET'])
-def show_profile_client():
+@app.route('/admin/show/', methods=['GET'])
+def show_profile_admin():
     # no need for ID since token is handled.
-    return requests.get(path+admin+'/api/account/properties/')
+    return requests.get(path+port_nums['admin']+'/api/account/properties/', headers=request.headers)
 
-    
+
+
+
+
 
 
 if __name__ == '__main__':
