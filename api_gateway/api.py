@@ -34,17 +34,26 @@ def show_profile_admin():
 
 @app.route('/client/register/', methods=['POST'])
 def register_client():
-    return requests.post(path + port_nums['client'] + '/api/account/register/', headers=request.headers)
+    return requests.post(path + port_nums['client'] + '/api/account/register/', json=request.json)
 
 
 @app.route('/admin/update/', methods=['PATCH'])
 def update_admin():
-    return requests.patch(path + port_nums['admin'] + '/api/account/update', headers=request.headers)
+    return requests.patch(path + port_nums['admin'] + '/api/account/update/', json=request.json)
 
 
 @app.route('/client/update/', methods=['PATCH'])
 def update_client():
-    return requests.patch(path + port_nums['client'] + '/api/account/update', headers=request.headers)
+    return requests.patch(path + port_nums['client'] + '/api/account/update/', json=request.json)
+
+
+@app.route('/client/refreshtoken/', methods=['POST'])
+def refresh_token_client():
+    return requests.post(path + port_nums['client'] + '/api/token/refresh/', json=request.json)
+
+@app.route('/admin/refreshtoken/', methods=['POST'])
+def refresh_token_admin():
+    return requests.post(path + port_nums['admin'] + '/api/token/refresh/', json=request.json)
 
 
 if __name__ == '__main__':
