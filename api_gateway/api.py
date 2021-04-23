@@ -9,7 +9,8 @@ app = Flask(__name__)
 path = "http://127.0.0.1:"
 port_nums = {'admin': '8001', 'client': '8002', 'search': '8003', 'book': '8004'}
 
-#ACCOUNTS FUNCTION
+
+# ACCOUNTS FUNCTION
 
 @app.route('/client/login/', methods=['POST'])
 def login_client():
@@ -52,16 +53,42 @@ def update_client():
 def refresh_token_client():
     return requests.post(path + port_nums['client'] + '/api/token/refresh/', json=request.json)
 
+
 @app.route('/admin/refreshtoken/', methods=['POST'])
 def refresh_token_admin():
     return requests.post(path + port_nums['admin'] + '/api/token/refresh/', json=request.json)
 
-#BOOK FUNCTION
+
+# BOOK FUNCTION
 @app.route('/book/read/<int:id>', methods=['POST'])
 def book_read(id):
-    res = requests.get(path + port_nums['admin'] + '/api/account/properties/', headers=request.headers)    
-    if res.status_code > 199 and res.status_code < 300:
-        return requests.get(path + port_nums['admin'] + '/api/v1/book/post/'+str(id)+"/")
+    res = requests.get(path + port_nums['admin'] + '/api/account/properties/', headers=request.headers)
+    if 199 < res.status_code < 300:
+        return requests.get(path + port_nums['book'] + '/api/v1/book/post/' + str(id) + "/")
+    return res
+
+
+@app.route('/book/delete/<int:id>', methods=['DELETE'])
+def book_delete(id):
+    res = requests.get(path + port_nums['admin'] + '/api/account/properties/', headers=request.headers)
+    if 199 < res.status_code < 300:
+        return requests.delete(path + port_nums['book'] + '/api/v1/book/post/' + str(id) + "/", json=request.json)
+    return res
+
+
+@app.route('/book/update/<int:id>', methods=['PATCH'])
+def book_update(id):
+    res = requests.get(path + port_nums['admin'] + '/api/account/properties/', headers=request.headers)
+    if 199 < res.status_code < 300:
+        return requests.patch(path + port_nums['book'] + '/api/v1/book/post/' + str(id) + "/", json=request.json)
+    return res
+
+
+@app.route('/book/create/<int:id>', methods=['POST'])
+def book_create(id):
+    res = requests.get(path + port_nums['admin'] + '/api/account/properties/', headers=request.headers)
+    if 199 < res.status_code < 300:
+        return requests.post(path + port_nums['book'] + '/api/v1/book/post/' + str(id) + "/", json=request.json)
     return res
 
 
